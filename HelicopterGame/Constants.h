@@ -13,7 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include "HelicopterConfig.h"
-#include "SleepThread.h"
+//#include "SleepThread.h"
 
 enum ATTR_TYPE {G_ACCEL};
 
