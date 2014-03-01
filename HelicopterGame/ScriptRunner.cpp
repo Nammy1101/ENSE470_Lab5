@@ -8,13 +8,13 @@
 */
 
 #include "ScriptRunner.h"
-#include "Command.h"
-#include "Render.h"
-#include <fstream>
+//#include "Command.h"
+//#include "Render.h"
+//#include <fstream>
 #include <string>
-#include <vector>
+//#include <vector>
 #include <stdlib.h>
-#include <iostream>
+//#include <iostream>
 #include "SleepThread.h"
 
 using namespace std;
@@ -54,8 +54,22 @@ vector<Command> ScriptRunner::parseScript(ifstream & script)
 				break;
 			}
 			input = input.substr(input.find_first_of(" ") +1,input.length());
-			while(input.length() > 0)
+		/*	while(input.length() > 0)
 			{
+				if(input[0] == '#') break;
+				int spaceloc = input.find_first_of(" \n");
+				string param = input.substr(0,(spaceloc>=0)?spaceloc:input.length());
+				if(spaceloc == -1)
+						input = "";
+				else
+					input = input.substr(spaceloc+1,input.length());
+				char * charParam = new char[param.size()+1];
+				strcpy(charParam,param.c_str());
+				float parameter = (float)atof(charParam);
+				params.push_back(parameter);
+			}*/
+
+			for(int i = input.length(); i > 0; i = input.length()){
 				if(input[0] == '#') break;
 				int spaceloc = input.find_first_of(" \n");
 				string param = input.substr(0,(spaceloc>=0)?spaceloc:input.length());

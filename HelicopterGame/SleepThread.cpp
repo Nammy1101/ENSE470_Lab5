@@ -8,6 +8,8 @@
 #include "SleepThread.h"
 #include <Windows.h>
 #include <OpenThreads\Thread>
+//#include <chrono>
+//include <thread>
 
 SleepThread::SleepThread(int time)
 {
@@ -17,4 +19,5 @@ SleepThread::SleepThread(int time)
 void SleepThread::run()
 {
 	Sleep(sleepTime * 1000);
+	//std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime*1000));
 }

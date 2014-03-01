@@ -8,14 +8,14 @@
 */
 
 #include "ModelController.h"
-#include "ScriptRunner.h"
-#include "Logger.h"
+//#include "ScriptRunner.h"
+//#include "Logger.h"
 
 //Override
 bool ModelController::handle( const osgGA::GUIEventAdapter& ea,
 		                       osgGA::GUIActionAdapter& aa )
 {
-	ScriptRunner * sr = ScriptRunner::getInstance();	if ( !_model )
+	//ScriptRunner * sr = ScriptRunner::getInstance();	if ( !_model )
 	{
 			return false;  //Make sure model is initialized
 	}
@@ -31,12 +31,12 @@ bool ModelController::handle( const osgGA::GUIEventAdapter& ea,
     		case 's': case 'S':
 				gameRender->decreaseRotor();
 				break;
-			case 'p': case 'P':
-				if(!sr->getStatus()){sr->runScripts();}
-				break;
-			case 'l': case 'L':
-				Logger::getInstance()->toggleLogging();
-				break;
+			//case 'p': case 'P':
+			//	if(!sr->getStatus()){sr->runScripts();}
+			//	break;
+		//	case 'l': case 'L':
+			//	Logger::getInstance()->toggleLogging();
+				//break;
 			}
 			break;
 	}

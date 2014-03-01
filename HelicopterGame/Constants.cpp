@@ -10,8 +10,8 @@
 */
 #include "Constants.h"
 #include <vector>
-#include <iostream>
-#include <fstream>
+//#include <iostream>
+//#include <fstream>
 #include <string>
 #include <osg/PositionAttitudeTransform>
 

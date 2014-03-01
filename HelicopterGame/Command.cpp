@@ -7,10 +7,10 @@
 */
 
 #include "Command.h"
-#include "Render.h"
-#include <vector>
+//#include "Render.h"
+//#include <vector>
 #include <iostream>
-#include "SleepThread.h"
+//#include "SleepThread.h"
 
 Command::Command(COMMAND_TYPE command, vector<float> parameters)
 {

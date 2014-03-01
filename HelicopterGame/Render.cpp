@@ -15,13 +15,23 @@
 
 */
 
-#include "ScriptRunner.h"
-#include "Logger.h"
+/*
+Changed line 	//Vector2 vector = Vector2::Vector2(direction.x(), direction.y());
+added line 	float vectorLength = sqrt(direction.x() * direction.x() + direction.y() * direction.y());
+changed 	//float theta = osg::DegreesToRadians(vector.Length()*relationship);
+			float theta = osg::DegreesToRadians(vectorLength*relationship);
+*/
+
+//#include "ScriptRunner.h"
+//#include "Logger.h"
+#include <fstream>
+#include <vector>
 #include "ModelController.h"
 #include "Render.h"
 #include "TimerHandler.h"
-#include "Trevor/Vector2.h"
-#include "Constants.h"
+#include <string>
+//#include "Trevor/Vector2.h"
+//#include "Constants.h"
 #include <osg/ShapeDrawable>
 #include <iostream>
 #include <osg/PositionAttitudeTransform>
@@ -30,14 +40,16 @@
 #include <osgGA/NodeTrackerManipulator>
 #include <osg/FrameStamp>
 
+using namespace std;
+
 
 void Render::Game_Play(){
-	ScriptRunner * sr = ScriptRunner::getInstance();
-	sr->setRender(this);
+	//ScriptRunner * sr = ScriptRunner::getInstance();
+	//sr->setRender(this);
 	osg::ref_ptr<osg::Node> helicopter = osgDB::readNodeFile("Sikorsky2.osg");
 	osg::ref_ptr<osg::Node> ground = osgDB::readNodeFile("lz.osg");
 	osg::ref_ptr<osg::Node> confetti = osgDB::readNodeFile("glsl_confetti.osgt");
-	osg::ref_ptr<osg::Node> cow = osgDB::readNodeFile("cow.osg");
+	//osg::ref_ptr<osg::Node> cow = osgDB::readNodeFile("cow.osg");
 
 	ball1  = new osg::ShapeDrawable;
 	ball1->setShape( new osg::Sphere(osg::Vec3(0.0f, 0.0f,0.0f), 25.0f));
@@ -90,12 +102,12 @@ void Render::Game_Play(){
 	confettiTransform->addChild(confetti.get());
 	confettiTransform->setPosition(osg::Vec3(-150.0f,-2500.0f,100));
 	confettiTransform->setScale(osg::Vec3(100.0f,100.0f,100.0f));
-
+	/*
 	osg::ref_ptr<osg::PositionAttitudeTransform> cowTransform = new osg::PositionAttitudeTransform;
 	cowTransform->addChild(cow.get());
 	cowTransform->setPosition(osg::Vec3(100.0f, -1500.0f, 50.0f));
 	cowTransform->setScale(osg::Vec3(20.0f, 20.0f, 20.0f));
-
+	*/
 	modelPosition.set(helicopterTransform->getPosition());
 	modelVelocity.set(osg::Vec3f(0,0,0));
 
@@ -107,7 +119,7 @@ void Render::Game_Play(){
 	rootNode->addChild( helicopterTransform.get());
 	rootNode->addChild(torusGroup.get());
 	rootNode->addChild( confettiTransform.get());
-	rootNode->addChild( cowTransform.get());
+	//rootNode->addChild( cowTransform.get());
 	
 	viewer.addEventHandler( ctrler.get());
 
@@ -187,15 +199,16 @@ void Render::setJoystick(float theta, float phi)
 }
 
 osg::Vec3f Render::calculateForceDirections(float force, osg::Vec2f direction){
-	Vector2 vector = Vector2::Vector2(direction.x(), direction.y());
+	//Vector2 vector = Vector2::Vector2(direction.x(), direction.y());
 	float viewHeight = viewer.getCamera()->getViewport()->height();
 	float viewWidth = viewer.getCamera()->getViewport()->width();
-	
+	float vectorLength = sqrt(direction.x() * direction.x() + direction.y() * direction.y());
 	float relationship = (viewHeight<viewWidth)?15/(viewHeight/4):15/(viewWidth/4);
 
 	//std::cout << "Relationship: " << relationship << std::endl;
 	
-	float theta = osg::DegreesToRadians(vector.Length()*relationship);
+	//float theta = osg::DegreesToRadians(vector.Length()*relationship);
+	float theta = osg::DegreesToRadians(vectorLength*relationship);
 	float phi = atan2(direction.y(), direction.x());
 
 	//std::cout << "Theta: " << theta << std::endl;
@@ -203,7 +216,7 @@ osg::Vec3f Render::calculateForceDirections(float force, osg::Vec2f direction){
 
 	//Constants::getInstance()->setFrictionConstant(theta);
 	//std::cout << Constants::getInstance()->frictionConstant << std::endl;
-	Logger::getInstance()->log("Theta: " + f2s(theta) + " Phi: " + f2s(phi));
+	//Logger::getInstance()->log("Theta: " + f2s(theta) + " Phi: " + f2s(phi));
 	return osg::Vec3f(-(force*sin(theta)*cos(phi)), -(force*sin(theta)*sin(phi)),(force*cos(theta)));
 }
 
@@ -239,7 +252,7 @@ void Render::setGravity(float gravity)
 	aGrav = gravity;
 }
 
-bool Render::detectCollision(osg::BoundingSphere& bs1, osg::BoundingSphere& bs2)
+bool Render::detectCollision(const osg::BoundingSphere& bs1,const osg::BoundingSphere& bs2)
 {
 	if (bs1.intersects(bs2))
 		return true;
@@ -252,17 +265,17 @@ void Render::updateGamePlay()
 	if (Render::detectCollision(osg::BoundingSphere(helicopterTransform->getBound()), osg::BoundingSphere(tor1Tr->getBound())))
 	{
 		ball1->setColor(osg::Vec4(1.0f,0.0f,0.0f,0.0f));
-		Logger::getInstance()->log("Collision with ball #1");
+		//Logger::getInstance()->log("Collision with ball #1");
 	}
 	if (Render::detectCollision(osg::BoundingSphere(helicopterTransform->getBound()), osg::BoundingSphere(tor2Tr->getBound())))
 	{
 		ball2->setColor(osg::Vec4(1.0f,0.0f,0.0f,0.0f));
-		Logger::getInstance()->log("Collision with ball #2");
+		//Logger::getInstance()->log("Collision with ball #2");
 	}
 	if (Render::detectCollision(osg::BoundingSphere(helicopterTransform->getBound()), osg::BoundingSphere(tor3Tr->getBound())))
 	{
 		ball3->setColor(osg::Vec4(1.0f,0.0f,0.0f,0.0f));
-		Logger::getInstance()->log("Collision with ball #3");
+		//Logger::getInstance()->log("Collision with ball #3");
 	}
 
 	float frictionScalar = Constants::getInstance()->frictionConstant*sqrt(pow(modelVelocity.x(),2)+pow(modelVelocity.y(),2)+pow(modelVelocity.z(),2));
@@ -293,16 +306,16 @@ void Render::updateGamePlay()
 		zVel *= 0.8;
 		zVel = -zVel;
 	}
-	Logger* logger = Logger::getInstance();
-	string something = f2s(xPos);
-	logger->log("X Pos: " + f2s(xPos) + " Y Pos: " + f2s(yPos) + " Z Pos: " + f2s(zPos)); 
-	logger->log("X Vel: " + f2s(xVel) + " Y Vel: " + f2s(yVel) +" Z Vel: " + f2s(zVel));
-	logger->log("X Acc: " + f2s(xAcc) + " Y Acc: " + f2s(yAcc) +" Z Acc: " + f2s(zAcc));
-	logger->log("Throttle Position: " + f2s(rotorForce/Constants::getInstance()->baseThrottle));
+	//Logger* logger = Logger::getInstance();
+	//string something = f2s(xPos);
+	//logger->log("X Pos: " + f2s(xPos) + " Y Pos: " + f2s(yPos) + " Z Pos: " + f2s(zPos)); 
+	//logger->log("X Vel: " + f2s(xVel) + " Y Vel: " + f2s(yVel) +" Z Vel: " + f2s(zVel));
+	//logger->log("X Acc: " + f2s(xAcc) + " Y Acc: " + f2s(yAcc) +" Z Acc: " + f2s(zAcc));
+	//logger->log("Throttle Position: " + f2s(rotorForce/Constants::getInstance()->baseThrottle));
 	modelPosition.set(osg::Vec3d(xPos, yPos, zPos));
 	modelVelocity.set(osg::Vec3f(xVel, yVel, zVel));
 	helicopterTransform->setPosition(modelPosition); 
-	if(ScriptRunner::getInstance()->getStatus()){ ScriptRunner::getInstance()->doCommand(); }
+	//if(ScriptRunner::getInstance()->getStatus()){ ScriptRunner::getInstance()->doCommand(); }
 	
 }
 
